@@ -28,10 +28,9 @@
             height: 100vh;
             width: 100%;
             display: flex;
-            flex-direction: column; /* Alterado para coluna em mobile */
             align-items: center;
-            justify-content: center; /* Centralizado verticalmente */
-            padding: 20px;
+            justify-content: space-between;
+            padding: 0 5%;
             position: absolute;
             top: 0;
             left: 0;
@@ -61,21 +60,18 @@
         }
 
         .text-container {
-            width: 100%; /* Ocupa toda a largura em mobile */
-            text-align: center; /* Texto centralizado */
-            margin-bottom: 20px; /* Espaço entre texto e modelo */
+            width: 40%;
             z-index: 2;
         }
 
         .glasses-container {
-            width: 100%; /* Ocupa toda a largura */
-            height: 50vh; /* Altura reduzida para mobile */
+            width: 45%;
+            height: 80%;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
             background-color: transparent;
-            touch-action: none; /* Permite interação touch com o modelo 3D */
         }
 
         .glasses-canvas {
@@ -85,30 +81,30 @@
         }
 
         h1 {
-            font-size: 2rem; /* Tamanho reduzido para mobile */
-            margin-bottom: 1rem;
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
             transform: translateX(100vw);
             opacity: 0;
             color: #333;
         }
 
         p {
-            font-size: 1rem; /* Tamanho reduzido para mobile */
+            font-size: 1.2rem;
             line-height: 1.6;
             transform: translateX(100vw);
             opacity: 0;
             color: #555;
         }
 
-        /* Navegação por pontos - reposicionada para mobile */
+        /* Navegação por pontos */
         .nav-dots {
             position: fixed;
-            bottom: 20px; /* Movido para baixo em mobile */
-            left: 50%;
-            transform: translateX(-50%);
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
             z-index: 10;
             display: flex;
-            flex-direction: row; /* Alinhados horizontalmente */
+            flex-direction: column;
             gap: 15px;
         }
 
@@ -133,50 +129,12 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: #333;
-            font-size: 1rem; /* Tamanho reduzido */
-        }
-
-        /* Media Queries para dispositivos maiores */
-        @media (min-width: 768px) {
-            section {
-                flex-direction: row; /* Volta ao layout original em desktop */
-                justify-content: space-between;
-                padding: 0 5%;
-            }
-
-            .text-container {
-                width: 40%; /* Largura original */
-                text-align: left; /* Alinhamento original */
-                margin-bottom: 0;
-            }
-
-            .glasses-container {
-                width: 45%; /* Largura original */
-                height: 80%; /* Altura original */
-            }
-
-            h1 {
-                font-size: 3.5rem; /* Tamanho original */
-            }
-
-            p {
-                font-size: 1.2rem; /* Tamanho original */
-            }
-
-            .nav-dots {
-                top: 50%;
-                bottom: auto;
-                left: auto;
-                right: 30px;
-                transform: translateY(-50%);
-                flex-direction: column; /* Volta à coluna em desktop */
-            }
+            font-size: 1.2rem;
         }
     </style>
 </head>
 
 <body>
-    <!-- O restante do seu HTML permanece igual -->
     <div class="sections-container">
         <!-- Seção 1 -->
         <section class="section-1 active">
@@ -222,10 +180,11 @@
         <div class="dot" data-section="2"></div>
     </div>
 
-    <!-- Scripts permanecem iguais -->
+    <!-- GSAP e ScrollTrigger -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
 
+    <!-- Three.js -->
     <script type="importmap">
         {
             "imports": {
@@ -236,7 +195,7 @@
     </script>
 
     <script type="module">
-        // Configuração Three.js com ajustes para mobile
+        // Configuração Three.js para cada seção
         async function setupThreeJS(sectionIndex) {
             const containerId = `glasses-container-${sectionIndex + 1}`;
             const canvasId = `glasses-canvas-${sectionIndex + 1}`;
@@ -256,7 +215,7 @@
             const scene = new Scene();
             scene.background = null;
 
-            // Câmera - ajustada para mobile
+            // Câmera
             const camera = new PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
             camera.position.set(0, 0, 5);
 
@@ -267,7 +226,7 @@
                 alpha: true
             });
             renderer.setSize(container.clientWidth, container.clientHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limita pixel ratio para performance
+            renderer.setPixelRatio(window.devicePixelRatio);
 
             // Luzes
             const ambientLight = new AmbientLight(0xffffff, 0.7);
@@ -285,11 +244,31 @@
             const loader = new GLTFLoader();
             let model, controls;
 
+            // URLs dos modelos (certifique-se que esses arquivos existem na mesma pasta)
             const modelUrls = [
-                './assets/sun_glasses_fbx_346kb.glb',
-                './assets/party_glasses_heart_type.glb',
-                './assets/glasses_09.glb'
+                'sun_glasses_fbx_346kb.glb',
+                'party_glasses_heart_type.glb',
+                'glasses_09.glb'
             ];
+
+            // Verifica se o arquivo existe antes de tentar carregar
+            async function checkFileExists(url) {
+                try {
+                    const response = await fetch(url, { method: 'HEAD' });
+                    return response.ok;
+                } catch (error) {
+                    return false;
+                }
+            }
+
+            const fileExists = await checkFileExists(modelUrls[sectionIndex]);
+            
+            if (!fileExists) {
+                loadingElement.textContent = 'Modelo 3D não encontrado';
+                loadingElement.style.color = 'red';
+                console.error(`Arquivo não encontrado: ${modelUrls[sectionIndex]}`);
+                return;
+            }
 
             loader.load(
                 modelUrls[sectionIndex],
@@ -307,23 +286,18 @@
                     model.position.y -= center.y;
                     model.position.z -= center.z;
 
-                    // Ajustar câmera para mobile
+                    // Ajustar câmera
                     const maxDim = Math.max(size.x, size.y, size.z);
                     const fov = camera.fov * (Math.PI / 180);
                     let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
-                    cameraZ *= window.innerWidth < 768 ? 2 : 1.5; // Zoom maior em mobile
+                    cameraZ *= 1.5;
                     camera.position.z = cameraZ;
 
-                    // Controles de órbita com ajustes para touch
+                    // Controles de órbita
                     controls = new OrbitControls(camera, canvas);
                     controls.target.set(0, 0, 0);
                     controls.enableDamping = true;
                     controls.dampingFactor = 0.25;
-                    
-                    // Ajustes para touch screen
-                    controls.touchAction = 'none'; // Permite rolagem sem conflito
-                    controls.enablePan = false; // Desativa pan para melhor experiência mobile
-                    controls.maxPolarAngle = Math.PI * 0.9; // Limita rotação vertical
 
                     // Animação
                     function animate() {
@@ -334,30 +308,21 @@
 
                     animate();
 
-                    // Redimensionamento responsivo
+                    // Redimensionamento
                     function onResize() {
                         camera.aspect = container.clientWidth / container.clientHeight;
                         camera.updateProjectionMatrix();
                         renderer.setSize(container.clientWidth, container.clientHeight);
-                        
-                        // Ajuste adicional para mobile
-                        if (window.innerWidth < 768 && model) {
-                            const bbox = new Box3().setFromObject(model);
-                            const size = bbox.getSize(new Vector3());
-                            const maxDim = Math.max(size.x, size.y, size.z);
-                            const fov = camera.fov * (Math.PI / 180);
-                            let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
-                            cameraZ *= 2; // Zoom maior em mobile
-                            camera.position.z = cameraZ;
-                        }
                     }
 
                     window.addEventListener('resize', onResize);
                 },
+                // Progresso do carregamento
                 function (xhr) {
                     const percentLoaded = (xhr.loaded / xhr.total * 100).toFixed(0);
                     loadingElement.textContent = `Carregando modelo 3D... ${percentLoaded}%`;
                 },
+                // Tratamento de erro
                 function (error) {
                     console.error('Erro ao carregar o modelo:', error);
                     loadingElement.textContent = 'Erro ao carregar o modelo 3D';
@@ -368,8 +333,129 @@
             return { scene, camera, renderer };
         }
 
-        // O restante do seu JavaScript permanece igual
-        // ...
+        // Inicializar Three.js para cada seção quando ela se tornar ativa
+        const threeJSInstances = [];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const sections = document.querySelectorAll('section');
+            const dots = document.querySelectorAll('.dot');
+            let currentSection = 0;
+            const totalSections = sections.length;
+            let isAnimating = false;
+
+            // Animação de entrada
+            function animateSectionIn(sectionIndex) {
+                const section = sections[sectionIndex];
+                const title = section.querySelector('h1');
+                const text = section.querySelector('p');
+
+                // Resetar animações anteriores
+                gsap.killTweensOf([title, text]);
+
+                // Configuração inicial
+                gsap.set(title, { x: '100vw', opacity: 0 });
+                gsap.set(text, { x: '100vw', opacity: 0 });
+
+                // Animação do título
+                gsap.to(title, {
+                    x: '0',
+                    opacity: 1,
+                    duration: 1.2,
+                    ease: "power3.out"
+                });
+
+                // Animação do texto
+                gsap.to(text, {
+                    x: '0',
+                    opacity: 1,
+                    duration: 1.2,
+                    delay: 0.3,
+                    ease: "power3.out",
+                    onComplete: function () {
+                        gsap.to([title, text], {
+                            x: '-100vw',
+                            opacity: 0,
+                            duration: 1.2,
+                            delay: 1.5,
+                            ease: "power3.in",
+                            onComplete: function () {
+                                if (!isAnimating) {
+                                    goToSection(currentSection + 1);
+                                }
+                            }
+                        });
+                    }
+                });
+
+                // Inicializar Three.js se ainda não foi feito
+                if (!threeJSInstances[sectionIndex]) {
+                    setupThreeJS(sectionIndex).then(instance => {
+                        threeJSInstances[sectionIndex] = instance;
+                    });
+                }
+
+                // Atualizar navegação por pontos
+                dots.forEach(dot => dot.classList.remove('active'));
+                dots[sectionIndex].classList.add('active');
+            }
+
+            // Animação de saída
+            function animateSectionOut(sectionIndex) {
+                const section = sections[sectionIndex];
+                const title = section.querySelector('h1');
+                const text = section.querySelector('p');
+
+                gsap.to([title, text], {
+                    x: '-100vw',
+                    opacity: 0,
+                    duration: 0.8,
+                    onComplete: function () {
+                        gsap.set(title, { x: '100vw' });
+                        gsap.set(text, { x: '100vw' });
+                    }
+                });
+            }
+
+            // Mudança de seção
+            function goToSection(index) {
+                if (isAnimating) return;
+
+                isAnimating = true;
+                const nextSection = (index + totalSections) % totalSections;
+
+                animateSectionOut(currentSection);
+                sections[currentSection].classList.remove('active');
+                sections[nextSection].classList.add('active');
+                animateSectionIn(nextSection);
+
+                currentSection = nextSection;
+
+                setTimeout(() => {
+                    isAnimating = false;
+                }, 1000);
+            }
+
+            // Navegação por pontos
+            dots.forEach(dot => {
+                dot.addEventListener('click', function () {
+                    const sectionIndex = parseInt(this.getAttribute('data-section'));
+                    if (sectionIndex !== currentSection) {
+                        goToSection(sectionIndex);
+                    }
+                });
+            });
+
+            // Controles de teclado
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'ArrowRight') goToSection(currentSection + 1);
+                if (e.key === 'ArrowLeft') goToSection(currentSection - 1);
+                if (e.key === 'ArrowUp') goToSection(0);
+                if (e.key === 'ArrowDown') goToSection(totalSections - 1);
+            });
+
+            // Inicialização
+            animateSectionIn(0);
+        });
     </script>
 </body>
 </html>
