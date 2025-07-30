@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
     <title>Portfólio 3D - Óculos</title>
     <style>
+        /* RESET E CONFIGURAÇÕES GERAIS */
         * {
             margin: 0;
             padding: 0;
@@ -19,12 +20,14 @@
             height: 100vh;
         }
 
+        /* CONTAINER PRINCIPAL */
         .sections-container {
             position: relative;
             height: 100vh;
             width: 100%;
         }
 
+        /* ESTILOS DAS SEÇÕES */
         section {
             height: 100vh;
             width: 100%;
@@ -44,62 +47,62 @@
             z-index: 1;
         }
 
+        /* EFEITOS DE FUNDO ANIMADOS */
         section::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      opacity: 0.9;
-      background: linear-gradient(135deg, #39f6ca 0%, #8f76f3 50%, #e78d33 100%);
-      background-size: 200% 200%;
-      animation: gradientShift 15s ease infinite;
-      filter: url(#noiseFilter);
-    }
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.9;
+            background: linear-gradient(135deg, #39f6ca 0%, #8f76f3 50%, #e78d33 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 15s ease infinite;
+            filter: url(#noiseFilter);
+        }
 
-    section::after {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      opacity: 0.3;
-      background: linear-gradient(135deg,
-          rgba(255, 255, 255, 0) 0%,
-          rgba(255, 255, 255, 0.3) 50%,
-          rgba(255, 255, 255, 0) 100%);
-      background-size: 200% 200%;
-      animation: shimmer 6s linear infinite;
-    }
+        section::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, 0.3) 50%,
+                    rgba(255, 255, 255, 0) 100%);
+            background-size: 200% 200%;
+            animation: shimmer 6s linear infinite;
+        }
 
-    @keyframes gradientShift {
-      0% {
-        background-position: 0% 0%;
-      }
+        /* ANIMAÇÕES */
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 0%;
+            }
+            50% {
+                background-position: 100% 100%;
+            }
+            100% {
+                background-position: 0% 0%;
+            }
+        }
 
-      50% {
-        background-position: 100% 100%;
-      }
+        @keyframes shimmer {
+            0% {
+                background-position: -100% -100%;
+            }
+            100% {
+                background-position: 100% 100%;
+            }
+        }
 
-      100% {
-        background-position: 0% 0%;
-      }
-    }
-
-    @keyframes shimmer {
-      0% {
-        background-position: -100% -100%;
-      }
-
-      100% {
-        background-position: 100% 100%;
-      }
-    }
-
+        /* CONTAINERS DE TEXTO E MODELOS 3D */
         .text-container {
             width: 40%;
             z-index: 2;
@@ -121,6 +124,7 @@
             background-color: transparent;
         }
 
+        /* ESTILOS DE TEXTO */
         h1 {
             font-size: 3.5rem;
             margin-bottom: 1.5rem;
@@ -137,7 +141,7 @@
             color: #555;
         }
 
-        /* Navegação por pontos */
+        /* NAVEGAÇÃO POR PONTOS */
         .nav-dots {
             position: fixed;
             right: 30px;
@@ -163,7 +167,7 @@
             transform: scale(1.3);
         }
 
-        /* Loading indicator */
+        /* INDICADOR DE CARREGAMENTO */
         .loading {
             position: absolute;
             top: 50%;
@@ -176,8 +180,9 @@
 </head>
 
 <body>
+    <!-- ESTRUTURA PRINCIPAL -->
     <div class="sections-container">
-        <!-- Seção 1 -->
+        <!-- SEÇÃO 1 - DESIGN INOVADOR -->
         <section class="section-1 active">
             <div class="text-container">
                 <h1 class="title-1">Design Inovador</h1>
@@ -189,7 +194,7 @@
             </div>
         </section>
 
-        <!-- Seção 2 -->
+        <!-- SEÇÃO 2 - CONFORTO SUPERIOR -->
         <section class="section-2">
             <div class="text-container">
                 <h1 class="title-2">Conforto Superior</h1>
@@ -201,7 +206,7 @@
             </div>
         </section>
 
-        <!-- Seção 3 -->
+        <!-- SEÇÃO 3 - PROTEÇÃO COMPLETA -->
         <section class="section-3">
             <div class="text-container">
                 <h1 class="title-3">Proteção Completa</h1>
@@ -214,18 +219,19 @@
         </section>
     </div>
 
-    <!-- Navegação por pontos -->
+    <!-- NAVEGAÇÃO POR PONTOS -->
     <div class="nav-dots">
         <div class="dot active" data-section="0"></div>
         <div class="dot" data-section="1"></div>
         <div class="dot" data-section="2"></div>
     </div>
 
-    <!-- GSAP e ScrollTrigger -->
+    <!-- BIBLIOTECAS EXTERNAS -->
+    <!-- GSAP para animações -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
 
-    <!-- Three.js -->
+    <!-- Configuração do Three.js -->
     <script type="importmap">
         {
             "imports": {
@@ -235,13 +241,19 @@
         }
     </script>
 
+    <!-- CÓDIGO PRINCIPAL -->
     <script type="module">
-        // Configuração Three.js para cada seção
+        /**
+         * Configuração do Three.js para cada seção
+         * @param {number} sectionIndex - Índice da seção (0, 1 ou 2)
+         */
         async function setupThreeJS(sectionIndex) {
+            // Elementos DOM
             const containerId = `glasses-container-${sectionIndex + 1}`;
             const canvasId = `glasses-canvas-${sectionIndex + 1}`;
             const loadingId = `loading-${sectionIndex + 1}`;
 
+            // Importações do Three.js
             const { Scene, PerspectiveCamera, WebGLRenderer, Color, AmbientLight,
                 DirectionalLight, Box3, Vector3 } = await import('three');
             const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
@@ -252,15 +264,15 @@
             const canvas = document.getElementById(canvasId);
             const loadingElement = document.getElementById(loadingId);
 
-            // Cena
+            // 1. Configuração da cena
             const scene = new Scene();
             scene.background = null;
 
-            // Câmera
+            // 2. Configuração da câmera
             const camera = new PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
             camera.position.set(0, 0, 5);
 
-            // Renderizador
+            // 3. Configuração do renderizador
             const renderer = new WebGLRenderer({
                 canvas: canvas,
                 antialias: true,
@@ -269,7 +281,7 @@
             renderer.setSize(container.clientWidth, container.clientHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
 
-            // Luzes
+            // 4. Configuração de iluminação
             const ambientLight = new AmbientLight(0xffffff, 0.7);
             scene.add(ambientLight);
 
@@ -281,18 +293,18 @@
             directionalLight2.position.set(-10, 10, -10);
             scene.add(directionalLight2);
 
-            // Carregar modelo
+            // 5. Carregamento do modelo 3D
             const loader = new GLTFLoader();
             let model, controls;
 
-            // URLs dos modelos (certifique-se que esses arquivos existem na mesma pasta)
+            // URLs dos modelos
             const modelUrls = [
                 'sun_glasses_fbx_346kb.glb',
                 'party_glasses_heart_type.glb',
                 'glasses_09.glb'
             ];
 
-            // Verifica se o arquivo existe antes de tentar carregar
+            // Verifica se o arquivo existe
             async function checkFileExists(url) {
                 try {
                     const response = await fetch(url, { method: 'HEAD' });
@@ -311,6 +323,7 @@
                 return;
             }
 
+            // Carrega o modelo 3D
             loader.load(
                 modelUrls[sectionIndex],
                 function (gltf) {
@@ -318,7 +331,7 @@
                     scene.add(model);
                     loadingElement.style.display = 'none';
 
-                    // Centralizar modelo
+                    // Centraliza o modelo na cena
                     const bbox = new Box3().setFromObject(model);
                     const center = bbox.getCenter(new Vector3());
                     const size = bbox.getSize(new Vector3());
@@ -327,20 +340,20 @@
                     model.position.y -= center.y;
                     model.position.z -= center.z;
 
-                    // Ajustar câmera
+                    // Ajusta a câmera para enquadrar o modelo
                     const maxDim = Math.max(size.x, size.y, size.z);
                     const fov = camera.fov * (Math.PI / 180);
                     let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
-                    cameraZ *= 1.5;
+                    cameraZ *= 1.5; // Margem adicional
                     camera.position.z = cameraZ;
 
-                    // Controles de órbita
+                    // Configura controles de órbita
                     controls = new OrbitControls(camera, canvas);
                     controls.target.set(0, 0, 0);
                     controls.enableDamping = true;
                     controls.dampingFactor = 0.25;
 
-                    // Animação
+                    // Função de animação
                     function animate() {
                         requestAnimationFrame(animate);
                         if (controls) controls.update();
@@ -349,7 +362,7 @@
 
                     animate();
 
-                    // Redimensionamento
+                    // Tratamento de redimensionamento
                     function onResize() {
                         camera.aspect = container.clientWidth / container.clientHeight;
                         camera.updateProjectionMatrix();
@@ -358,12 +371,12 @@
 
                     window.addEventListener('resize', onResize);
                 },
-                // Progresso do carregamento
+                // Callback de progresso
                 function (xhr) {
                     const percentLoaded = (xhr.loaded / xhr.total * 100).toFixed(0);
                     loadingElement.textContent = `Carregando modelo 3D... ${percentLoaded}%`;
                 },
-                // Tratamento de erro
+                // Callback de erro
                 function (error) {
                     console.error('Erro ao carregar o modelo:', error);
                     loadingElement.textContent = 'Erro ao carregar o modelo 3D';
@@ -374,9 +387,10 @@
             return { scene, camera, renderer };
         }
 
-        // Inicializar Three.js para cada seção quando ela se tornar ativa
+        // Array para armazenar instâncias do Three.js
         const threeJSInstances = [];
 
+        // Inicialização quando o DOM estiver carregado
         document.addEventListener('DOMContentLoaded', function () {
             const sections = document.querySelectorAll('section');
             const dots = document.querySelectorAll('.dot');
@@ -384,16 +398,19 @@
             const totalSections = sections.length;
             let isAnimating = false;
 
-            // Animação de entrada
+            /**
+             * Animação de entrada da seção
+             * @param {number} sectionIndex - Índice da seção a ser animada
+             */
             function animateSectionIn(sectionIndex) {
                 const section = sections[sectionIndex];
                 const title = section.querySelector('h1');
                 const text = section.querySelector('p');
 
-                // Resetar animações anteriores
+                // Limpa animações anteriores
                 gsap.killTweensOf([title, text]);
 
-                // Configuração inicial
+                // Configura estado inicial
                 gsap.set(title, { x: '100vw', opacity: 0 });
                 gsap.set(text, { x: '100vw', opacity: 0 });
 
@@ -405,7 +422,7 @@
                     ease: "power3.out"
                 });
 
-                // Animação do texto
+                // Animação do texto (com delay)
                 gsap.to(text, {
                     x: '0',
                     opacity: 1,
@@ -413,6 +430,7 @@
                     delay: 0.3,
                     ease: "power3.out",
                     onComplete: function () {
+                        // Animação de saída após exibição
                         gsap.to([title, text], {
                             x: '-100vw',
                             opacity: 0,
@@ -428,19 +446,22 @@
                     }
                 });
 
-                // Inicializar Three.js se ainda não foi feito
+                // Inicializa Three.js se necessário
                 if (!threeJSInstances[sectionIndex]) {
                     setupThreeJS(sectionIndex).then(instance => {
                         threeJSInstances[sectionIndex] = instance;
                     });
                 }
 
-                // Atualizar navegação por pontos
+                // Atualiza navegação por pontos
                 dots.forEach(dot => dot.classList.remove('active'));
                 dots[sectionIndex].classList.add('active');
             }
 
-            // Animação de saída
+            /**
+             * Animação de saída da seção
+             * @param {number} sectionIndex - Índice da seção a ser escondida
+             */
             function animateSectionOut(sectionIndex) {
                 const section = sections[sectionIndex];
                 const title = section.querySelector('h1');
@@ -457,13 +478,17 @@
                 });
             }
 
-            // Mudança de seção
+            /**
+             * Navega para uma seção específica
+             * @param {number} index - Índice da seção de destino
+             */
             function goToSection(index) {
                 if (isAnimating) return;
 
                 isAnimating = true;
                 const nextSection = (index + totalSections) % totalSections;
 
+                // Executa animações de transição
                 animateSectionOut(currentSection);
                 sections[currentSection].classList.remove('active');
                 sections[nextSection].classList.add('active');
@@ -471,12 +496,13 @@
 
                 currentSection = nextSection;
 
+                // Libera para novas animações após 1s
                 setTimeout(() => {
                     isAnimating = false;
                 }, 1000);
             }
 
-            // Navegação por pontos
+            // Configura eventos de clique nos pontos de navegação
             dots.forEach(dot => {
                 dot.addEventListener('click', function () {
                     const sectionIndex = parseInt(this.getAttribute('data-section'));
@@ -486,7 +512,7 @@
                 });
             });
 
-            // Controles de teclado
+            // Configura navegação por teclado
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'ArrowRight') goToSection(currentSection + 1);
                 if (e.key === 'ArrowLeft') goToSection(currentSection - 1);
@@ -494,7 +520,7 @@
                 if (e.key === 'ArrowDown') goToSection(totalSections - 1);
             });
 
-            // Inicialização
+            // Inicializa a primeira seção
             animateSectionIn(0);
         });
     </script>
