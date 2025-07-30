@@ -20,26 +20,37 @@
             height: 100vh;
         }
 
-        /* CONTAINER PRINCIPAL */
+        /* CONTAINER PRINCIPAL - RESPONSIVO */
         .sections-container {
             position: relative;
             height: 100vh;
             width: 100%;
         }
 
-        /* ESTILOS DAS SEÇÕES */
+        /* ESTILOS DAS SEÇÕES - LAYOUT RESPONSIVO */
         section {
             height: 100vh;
             width: 100%;
             display: flex;
+            flex-direction: column; /* Coluna em mobile */
             align-items: center;
-            justify-content: space-between;
-            padding: 0 5%;
+            justify-content: center;
+            padding: 20px;
             position: absolute;
             top: 0;
             left: 0;
             opacity: 0;
             transition: opacity 0.8s ease;
+        }
+
+        /* Desktop - Layout lado a lado */
+        @media (min-width: 768px) {
+            section {
+                flex-direction: row; /* Linha em desktop */
+                justify-content: space-between;
+                padding: 0 5%;
+                align-items: center;
+            }
         }
 
         section.active {
@@ -102,20 +113,36 @@
             }
         }
 
-        /* CONTAINERS DE TEXTO E MODELOS 3D */
+        /* CONTAINERS DE TEXTO E MODELOS 3D - RESPONSIVOS */
         .text-container {
-            width: 40%;
+            width: 100%;
             z-index: 2;
+            text-align: center; /* Centralizado em mobile */
+            margin-bottom: 20px; /* Espaço entre texto e modelo em mobile */
         }
 
         .glasses-container {
-            width: 45%;
-            height: 80%;
+            width: 100%;
+            height: 50vh; /* Altura menor em mobile */
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
             background-color: transparent;
+        }
+
+        /* Desktop - Ajuste de tamanho */
+        @media (min-width: 768px) {
+            .text-container {
+                width: 40%;
+                text-align: left; /* Alinhamento à esquerda em desktop */
+                margin-bottom: 0;
+            }
+
+            .glasses-container {
+                width: 45%;
+                height: 80%;
+            }
         }
 
         .glasses-canvas {
@@ -124,42 +151,70 @@
             background-color: transparent;
         }
 
-        /* ESTILOS DE TEXTO */
+        /* ESTILOS DE TEXTO RESPONSIVOS */
         h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
+            font-size: 2rem; /* Tamanho menor para mobile */
+            margin-bottom: 1rem;
             transform: translateX(100vw);
             opacity: 0;
             color: #333;
         }
 
         p {
-            font-size: 1.2rem;
+            font-size: 1rem; /* Tamanho menor para mobile */
             line-height: 1.6;
             transform: translateX(100vw);
             opacity: 0;
             color: #555;
         }
 
-        /* NAVEGAÇÃO POR PONTOS */
+        /* Desktop - Texto maior */
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 3.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            p {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* NAVEGAÇÃO POR PONTOS - RESPONSIVA */
         .nav-dots {
             position: fixed;
-            right: 30px;
+            right: 15px; /* Mais próximo da borda em mobile */
             top: 50%;
             transform: translateY(-50%);
             z-index: 10;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px; /* Espaço menor em mobile */
+        }
+
+        /* Desktop - Pontos maiores */
+        @media (min-width: 768px) {
+            .nav-dots {
+                right: 30px;
+                gap: 15px;
+            }
         }
 
         .dot {
-            width: 12px;
-            height: 12px;
+            width: 10px; /* Menor em mobile */
+            height: 10px;
             border-radius: 50%;
             background: rgba(0, 0, 0, 0.2);
             cursor: pointer;
             transition: all 0.3s ease;
+        }
+
+        /* Desktop - Pontos maiores */
+        @media (min-width: 768px) {
+            .dot {
+                width: 12px;
+                height: 12px;
+            }
         }
 
         .dot.active {
@@ -174,7 +229,14 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: #333;
-            font-size: 1.2rem;
+            font-size: 1rem; /* Menor em mobile */
+        }
+
+        /* Desktop - Texto maior */
+        @media (min-width: 768px) {
+            .loading {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
@@ -279,7 +341,10 @@
                 alpha: true
             });
             renderer.setSize(container.clientWidth, container.clientHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
+            
+            // Ajuste de pixel ratio para dispositivos móveis
+            const pixelRatio = Math.min(window.devicePixelRatio, 2); // Limita a 2 para performance
+            renderer.setPixelRatio(pixelRatio);
 
             // 4. Configuração de iluminação
             const ambientLight = new AmbientLight(0xffffff, 0.7);
@@ -352,6 +417,11 @@
                     controls.target.set(0, 0, 0);
                     controls.enableDamping = true;
                     controls.dampingFactor = 0.25;
+                    
+                    // Ajuste para mobile: desativa zoom se a tela for pequena
+                    if (window.innerWidth < 768) {
+                        controls.enableZoom = false;
+                    }
 
                     // Função de animação
                     function animate() {
@@ -364,12 +434,23 @@
 
                     // Tratamento de redimensionamento
                     function onResize() {
+                        // Atualiza tamanho do renderizador e câmera
                         camera.aspect = container.clientWidth / container.clientHeight;
                         camera.updateProjectionMatrix();
                         renderer.setSize(container.clientWidth, container.clientHeight);
+                        
+                        // Ajusta pixel ratio para dispositivos móveis
+                        const newPixelRatio = Math.min(window.devicePixelRatio, 2);
+                        renderer.setPixelRatio(newPixelRatio);
                     }
 
+                    // Adiciona listeners para redimensionamento
                     window.addEventListener('resize', onResize);
+                    
+                    // Remove listener quando a seção é alterada
+                    return () => {
+                        window.removeEventListener('resize', onResize);
+                    };
                 },
                 // Callback de progresso
                 function (xhr) {
@@ -519,6 +600,33 @@
                 if (e.key === 'ArrowUp') goToSection(0);
                 if (e.key === 'ArrowDown') goToSection(totalSections - 1);
             });
+
+            // Configura swipe para mobile
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            document.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+
+            document.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+
+            function handleSwipe() {
+                const threshold = 50; // Mínimo de pixels para considerar swipe
+                
+                // Swipe para a esquerda (próxima seção)
+                if (touchStartX - touchEndX > threshold) {
+                    goToSection(currentSection + 1);
+                }
+                
+                // Swipe para a direita (seção anterior)
+                if (touchEndX - touchStartX > threshold) {
+                    goToSection(currentSection - 1);
+                }
+            }
 
             // Inicializa a primeira seção
             animateSectionIn(0);
